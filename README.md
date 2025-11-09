@@ -17,8 +17,8 @@
 
 - .env (project root) — below is my connection string
 
-- DB_URL=mongodb+srv://admin:admin@kuldeepcluster.5zaybhb.mongodb.net/?appName=KuldeepCluster
-  BACKOFF_BASE=2
+- DB_URL=mongodb+srv://admin:admin@kuldeepcluster.5zaybhb.mongodb.net/?appName=KuldeepCluster  
+  BACKOFF_BASE=2  
   DEFAULT_MAX_RETRIES=3
 
 - .config/config.json is created automatically by the CLI when needed.
