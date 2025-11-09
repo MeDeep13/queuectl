@@ -80,64 +80,65 @@ node src/cli/queuectl.js dlq:retry job3
 - ## View all configurations
   node src/cli/queuectl.js config:show
 
-3. Architecture overview
-Job schema (core fields)
+# 3. Architecture overview
+## Job schema (core fields)
 
-id: string — custom unique job identifier (user-provided)
+- id: string — custom unique job identifier (user-provided)
+- command: the shell command to execute (string)
 
-command: the shell command to execute (string)
+- state: pending|processing|completed|failed|dead
 
-state: pending|processing|completed|failed|dead
+- attempts: number of attempts made
 
-attempts: number of attempts made
+- max_retries: allowed retry count
 
-max_retries: allowed retry count
+- next_run: Date when job becomes eligible
 
-next_run: Date when job becomes eligible
+- last_error: last failure message
 
-last_error: last failure message
+- createdAt / updatedAt (timestamps from Mongoose)
 
-createdAt / updatedAt (timestamps from Mongoose)
+## Job lifecycle
 
-Job lifecycle
+- Enqueue — job created in DB with state: pending and next_run default (now).
 
-Enqueue — job created in DB with state: pending and next_run default (now).
+- Pick — worker queries findOneAndUpdate({ state: 'pending', next_run: { $lte: now }}, { state: 'processing' }) to lock a job atomically.
 
-Pick — worker queries findOneAndUpdate({ state: 'pending', next_run: { $lte: now }}, { state: 'processing' }) to lock a job atomically.
+- Execute — worker uses child_process.exec() to run the command. Exit result determines success or failure.
 
-Execute — worker uses child_process.exec() to run the command. Exit result determines success or failure.
+- On success — mark job completed.
 
-On success — mark job completed.
+- On failure — increment attempts. If attempts < max_retries schedule next_run = now + backoff_base^attempts seconds and set state: pending; else move job to state: dead (DLQ).
 
-On failure — increment attempts. If attempts < max_retries schedule next_run = now + backoff_base^attempts seconds and set state: pending; else move job to state: dead (DLQ).
+- Graceful shutdown — worker listens for SIGTERM, stops polling (sets running=false) and exits after finishing a currently running job.
 
-Graceful shutdown — worker listens for SIGTERM, stops polling (sets running=false) and exits after finishing a currently running job.
-
-Persistence & locking
+## Persistence & locking
 
 MongoDB (Mongoose) stores jobs persistently. findOneAndUpdate is used to atomically claim a job so multiple workers won't process the same job.
 
-Config flow
+## Configuration flow
 
 Defaults come from .env (no hardcoded numbers in code). CLI config:set writes overrides into .config/config.json. loadConfig() reads .config/config.json first, then .env if key missing.
 
-4. Assumptions & trade-offs
+# 4. Assumptions & trade-offs
 
-Custom id (string) used: user-provided friendly IDs are used. Internally we query by id field (not Mongo _id). This keeps CLI/reading simple but requires id uniqueness.
+- Custom id (string) used: user-provided friendly IDs are used. Internally we query by id field (not Mongo _id). This keeps CLI/reading simple but requires id       uniqueness.
 
-Persistence choice: MongoDB (Atlas) was picked for convenience and robustness. Simpler solutions (JSON file) would be easier to run offline but are slower and more prone to corruption.
+- Persistence choice: MongoDB (Atlas) was picked for convenience and robustness. Simpler solutions (JSON file) would be easier to run offline but are slower and     more prone to corruption.
 
-Command execution: exec() is used (not spawn) for simplicity. exec() buffers stdout/stderr; very long outputs might need spawn().
+- Command execution: exec() is used (not spawn) for simplicity. exec() buffers stdout/stderr; very long outputs might need spawn().
 
-Backoff math: next_run uses Math.pow(backoff_base, attempts) seconds. This meets the spec; base is configurable.
+- Backoff math: next_run uses Math.pow(backoff_base, attempts) seconds. This meets the spec; base is configurable.
 
-Worker model: Workers are OS processes spawned by the CLI (spawn('node', ['src/index.js'])). PIDs are stored to allow worker:stop.
+- Worker model: Workers are OS processes spawned by the CLI (spawn('node', ['src/index.js'])). PIDs are stored to allow worker:stop.
 
-No web server: Dashboard is optional — not implemented here by default. Could be added as a bonus.
+- No web server: Dashboard is optional — not implemented here by default. Could be added as a bonus.
 
-5. Testing instructions (core flows)
+## 5. Testing instructions (core flows)
 
-Run these scenarios to verify assignment requirements.
+### Prerequisites
+- Ensure MongoDB is running  
+- Stop any existing workers: node src/cli/queuectl.js worker:stop  
 
 Use two terminals when testing: one to run workers, another for CLI commands.
 
