@@ -10,31 +10,31 @@
 - Config store: .config/config.json (CLI editable) and .env (defaults)
 
   # Project Structure
-  - QUEUECTL  
-      │
-      ├── .config
-      │   └── config.json
-      ├── .pids
-      │   └── workers.json
-      ├── node_modules
-      ├── src
-      │   ├── cli
-      │   │   └── queuectl.js
-      │   ├── config
-      │   │   └── dbConnection.js
-      │   ├── configuration
-      │   │   └── appConfig.js
-      │   ├── models
-      │   │   └── job.js
-      │   ├── services
-      │   │   └── jobServices.js
-      │   └── workers
-      │       └── worker.js
-      │   └── index.js
-      ├── .env
-      ├── dropDb.js
-      ├── package-lock.json
-      └── package.json
+  - QUEUECTL   
+      │   
+      ├── .config   
+      │   └── config.json   
+      ├── .pids   
+      │   └── workers.json   
+      ├── node_modules   
+      ├── src   
+      │   ├── cli   
+      │   │   └── queuectl.js   
+      │   ├── config   
+      │   │   └── dbConnection.js   
+      │   ├── configuration   
+      │   │   └── appConfig.js   
+      │   ├── models   
+      │   │   └── job.js   
+      │   ├── services   
+      │   │   └── jobServices.js   
+      │   └── workers   
+      │       └── worker.js   
+      │   └── index.js   
+      ├── .env   
+      ├── dropDb.js   
+      ├── package-lock.json   
+      └── package.json   
 
 
 # 1. Setup — run locally
