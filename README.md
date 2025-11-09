@@ -11,7 +11,8 @@
 
 - Node.js (v16+ recommended)
 - npm
-- MongoDB instance (Atlas connection string)  [MY CONNECTION STRING IS AVAILABLE IN .ENV FILE, IF THAT DON'T WORK IN ANY CASE, USE PERSONAL CONNECTION STRING OF MONGODB ATLAS]
+- MongoDB instance (Atlas connection string)
+  [MY CONNECTION STRING IS AVAILABLE IN .ENV FILE, IF THAT DON'T WORK IN ANY CASE, USE PERSONAL CONNECTION STRING OF MONGODB ATLAS]
 
 ## Files you should create/verify
 
@@ -35,9 +36,8 @@ Run commands with Node (examples below). For development you may run workers or 
 Note about Windows PowerShell vs cmd vs bash quoting: passing JSON/strings with spaces may need different quoting. For PowerShell prefer single quotes around JSON: '{ "id": "job1", "command": "echo hi" }' or better: pass a file path.
 
 ## Enqueue
-
-node src/cli/queuectl.js enqueue node src/cli/queuectl.js enqueue '{\"id\":\"job111\",\"command\":\"echo hi\"}'
-output: Job enqueued successfully! job1 echo Hello World
+- node src/cli/queuectl.js enqueue '{\"id\":\"job1\",\"command\":\"echo Hello World\"}'
+- 
 ## Start workers
 
 Start 1 worker (foreground logs):
