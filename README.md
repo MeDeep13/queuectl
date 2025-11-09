@@ -40,38 +40,46 @@ Note about Windows PowerShell vs cmd vs bash quoting: passing JSON/strings with 
 - 
 ## Start workers
 
-Start 1 worker (foreground logs):
-
+Start 1 worker
 node src/cli/queuectl.js worker:start
 
 Start 3 workers (spawns 3 processes and writes PIDs to .pids/workers.json):
-
 node src/cli/queuectl.js worker:start --count 3
-Stop workers (graceful)
+
+## Stop workers (gracefullu)
 node src/cli/queuectl.js worker:stop
-# sends SIGTERM to saved PIDs; workers finish current job then exit
-Status summary
+
+## Status summary/ check summary
 node src/cli/queuectl.js status
-# shows counts by state and active worker PIDs
-List jobs (optionally filter)
-node src/cli/queuectl.js list
-node src/cli/queuectl.js list --state pending
-DLQ retry
 
-Retry a dead job by its custom id:
+## List Jobs
+- ### List all jobs
+  node src/cli/queuectl.js list
 
-node src/cli/queuectl.js dlq:retry job1
-Config set/get
+- ### Filter by state
+  node src/cli/queuectl.js list --state dead
 
-Set default max retries or backoff base (stored in .config/config.json):
+- ### Show job output
+  node src/cli/queuectl.js list --output
 
-node src/cli/queuectl.js config:set default_max_retries 5
-node src/cli/queuectl.js config:set backoff_base 3
+## View job details
+node src/cli/queuectl.js job:details job1
 
-Get current value or show all:
+## Retry dead jobs
+node src/cli/queuectl.js dlq:retry job3
 
-node src/cli/queuectl.js config:get default_max_retries
-node src/cli/queuectl.js config:show
+## Configuration management
+
+- ## Set configuration:
+  node src/cli/queuectl.js config:set backoff_base 3  
+  node src/cli/queuectl.js config:set default_max_retries 5
+
+- ## Get configuration
+  node src/cli/queuectl.js config:get backoff_base
+
+- ## View all configurations
+  node src/cli/queuectl.js config:show
+
 3. Architecture overview
 Job schema (core fields)
 
