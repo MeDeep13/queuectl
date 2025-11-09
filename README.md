@@ -39,7 +39,7 @@ Run commands with Node (examples below). For development you may run workers or 
 Note about Windows PowerShell vs cmd vs bash quoting: passing JSON/strings with spaces may need different quoting. For PowerShell prefer single quotes around JSON: '{ "id": "job1", "command": "echo hi" }' or better: pass a file path.
 
 ## Enqueue
-- <pre>```bashnode src/cli/queuectl.js enqueue '{\"id\":\"job111\",\"command\":\"echo Hello World\"}'```</pre>
+- <pre>```bash node src/cli/queuectl.js enqueue '{\"id\":\"job111\",\"command\":\"echo Hello World\"}'```</pre>
   
 ## Start workers
 
@@ -149,7 +149,7 @@ Use two terminals when testing: one to run workers, another for CLI commands.
 
 Enqueue a job and start a worker:
 
-<pre>```bashnode src/cli/queuectl.js enqueue '{\"id\":\"job112\",\"command\":\"echo Hello World\"}'```</pre>
+<pre>```bash node src/cli/queuectl.js enqueue '{\"id\":\"job112\",\"command\":\"echo Hello World\"}'```</pre>
 node src/cli/queuectl.js worker:start
 
 Observe worker logs: job should run and get completed. Check DB or queuectl list --state completed.
@@ -157,7 +157,7 @@ Observe worker logs: job should run and get completed. Check DB or queuectl list
 ### B. Failed job retries and DLQ
 
 Create with an invalid command with an invalid command:  
-- <pre>```bashnode src/cli/queuectl.js enqueue '{\"id\":\"fail1\",\"command\":\"thisIsInvalid Hello World\"}'```</pre>
+- <pre>```bash node src/cli/queuectl.js enqueue '{\"id\":\"fail1\",\"command\":\"thisIsInvalid Hello World\"}'```</pre>
 
 Enqueue and watch worker attempts: it should retry with exponential backoff, then move to dead after retries are exhausted.
 Verify with: queuectl list --state dead and queuectl dlq:retry fail1 to requeue.
