@@ -36,7 +36,7 @@ Run commands with Node (examples below). For development you may run workers or 
 Note about Windows PowerShell vs cmd vs bash quoting: passing JSON/strings with spaces may need different quoting. For PowerShell prefer single quotes around JSON: '{ "id": "job1", "command": "echo hi" }' or better: pass a file path.
 
 ## Enqueue
-- <pre>```bashnode src/cli/queuectl.js enqueue '{\"id\":\"job1\",\"command\":\"echo Hello World\"}'```</pre>
+- <pre>```bashnode src/cli/queuectl.js enqueue '{\"id\":\"job111\",\"command\":\"echo Hello World\"}'```</pre>
   
 ## Start workers
 
@@ -142,35 +142,27 @@ Defaults come from .env (no hardcoded numbers in code). CLI config:set writes ov
 
 Use two terminals when testing: one to run workers, another for CLI commands.
 
-A. Basic job completes
+### A. Basic job completes
 
-Prepare job file j-success.json:
+Enqueue a job and start a worker:
 
-{ "id": "success1", "command": "echo hi" }
-
-Enqueue and start a worker:
-
-node src/cli/queuectl.js enqueue j-success.json
+<pre>```bashnode src/cli/queuectl.js enqueue '{\"id\":\"job112\",\"command\":\"echo Hello World\"}'```</pre>
 node src/cli/queuectl.js worker:start
 
 Observe worker logs: job should run and get completed. Check DB or queuectl list --state completed.
 
-B. Failed job retries and DLQ
+### B. Failed job retries and DLQ
 
-Create j-fail.json with an invalid command:
+Create with an invalid command with an invalid command:  
+- <pre>```bashnode src/cli/queuectl.js enqueue '{\"id\":\"fail1\",\"command\":\"thisIsInvalid Hello World\"}'```</pre>
 
-{ "id": "fail1", "command": "nonexistent_cmd", "max_retries": 2 }
-
-Enqueue and watch worker attempts: it should retry with exponential backoff, then move to dead after retries exhausted.
-
+Enqueue and watch worker attempts: it should retry with exponential backoff, then move to dead after retries are exhausted.
 Verify with: queuectl list --state dead and queuectl dlq:retry fail1 to requeue.
 
-C. Multiple workers, no overlap
+### C. Multiple workers, no overlap
 
-Enqueue several sleep/timeout commands (platform-appropriate). Use unique IDs.
-
+Enqueue several commands (platform-appropriate). Use unique IDs.
 Start multiple workers: queuectl worker:start --count 3.
-
 Confirm each job is processed once (check DB processing/completed states and worker logs).
 
 D. Invalid commands fail gracefully
