@@ -30,21 +30,19 @@
 Run commands with Node (examples below). For development you may run workers or CLI commands directly.
 
 
-2. Usage Examples (CLI)
+# 2. Usage Examples (CLI)
 
 Note about Windows PowerShell vs cmd vs bash quoting: passing JSON/strings with spaces may need different quoting. For PowerShell prefer single quotes around JSON: '{ "id": "job1", "command": "echo hi" }' or better: pass a file path.
 
-Enqueue (from JSON file)
-
-Create a job file job1.json:
+## Enqueue
 
 { "id": "job1", "command": "echo Hello World" }
 
 Then:
 
-node src/cli/queuectl.js enqueue job1.json
+node src/cli/queuectl.js enqueue node src/cli/queuectl.js enqueue '{\"id\":\"job111\",\"command\":\"echo hi\"}'
 # output: Job enqueued successfully! job1 echo Hello World
-Start workers
+## Start workers
 
 Start 1 worker (foreground logs):
 
