@@ -22,3 +22,176 @@
   DEFAULT_MAX_RETRIES=3
 
 - .config/config.json is created automatically by the CLI when needed.
+
+## Install & start
+- #from project root  
+  npm install
+
+Run commands with Node (examples below). For development you may run workers or CLI commands directly.
+
+
+2. Usage Examples (CLI)
+
+Note about Windows PowerShell vs cmd vs bash quoting: passing JSON/strings with spaces may need different quoting. For PowerShell prefer single quotes around JSON: '{ "id": "job1", "command": "echo hi" }' or better: pass a file path.
+
+Enqueue (from JSON file)
+
+Create a job file job1.json:
+
+{ "id": "job1", "command": "echo Hello World" }
+
+Then:
+
+node src/cli/queuectl.js enqueue job1.json
+# output: Job enqueued successfully! job1 echo Hello World
+Start workers
+
+Start 1 worker (foreground logs):
+
+node src/cli/queuectl.js worker:start
+
+Start 3 workers (spawns 3 processes and writes PIDs to .pids/workers.json):
+
+node src/cli/queuectl.js worker:start --count 3
+Stop workers (graceful)
+node src/cli/queuectl.js worker:stop
+# sends SIGTERM to saved PIDs; workers finish current job then exit
+Status summary
+node src/cli/queuectl.js status
+# shows counts by state and active worker PIDs
+List jobs (optionally filter)
+node src/cli/queuectl.js list
+node src/cli/queuectl.js list --state pending
+DLQ retry
+
+Retry a dead job by its custom id:
+
+node src/cli/queuectl.js dlq:retry job1
+Config set/get
+
+Set default max retries or backoff base (stored in .config/config.json):
+
+node src/cli/queuectl.js config:set default_max_retries 5
+node src/cli/queuectl.js config:set backoff_base 3
+
+Get current value or show all:
+
+node src/cli/queuectl.js config:get default_max_retries
+node src/cli/queuectl.js config:show
+3. Architecture overview
+Job schema (core fields)
+
+id: string — custom unique job identifier (user-provided)
+
+command: the shell command to execute (string)
+
+state: pending|processing|completed|failed|dead
+
+attempts: number of attempts made
+
+max_retries: allowed retry count
+
+next_run: Date when job becomes eligible
+
+last_error: last failure message
+
+createdAt / updatedAt (timestamps from Mongoose)
+
+Job lifecycle
+
+Enqueue — job created in DB with state: pending and next_run default (now).
+
+Pick — worker queries findOneAndUpdate({ state: 'pending', next_run: { $lte: now }}, { state: 'processing' }) to lock a job atomically.
+
+Execute — worker uses child_process.exec() to run the command. Exit result determines success or failure.
+
+On success — mark job completed.
+
+On failure — increment attempts. If attempts < max_retries schedule next_run = now + backoff_base^attempts seconds and set state: pending; else move job to state: dead (DLQ).
+
+Graceful shutdown — worker listens for SIGTERM, stops polling (sets running=false) and exits after finishing a currently running job.
+
+Persistence & locking
+
+MongoDB (Mongoose) stores jobs persistently. findOneAndUpdate is used to atomically claim a job so multiple workers won't process the same job.
+
+Config flow
+
+Defaults come from .env (no hardcoded numbers in code). CLI config:set writes overrides into .config/config.json. loadConfig() reads .config/config.json first, then .env if key missing.
+
+4. Assumptions & trade-offs
+
+Custom id (string) used: user-provided friendly IDs are used. Internally we query by id field (not Mongo _id). This keeps CLI/reading simple but requires id uniqueness.
+
+Persistence choice: MongoDB (Atlas) was picked for convenience and robustness. Simpler solutions (JSON file) would be easier to run offline but are slower and more prone to corruption.
+
+Command execution: exec() is used (not spawn) for simplicity. exec() buffers stdout/stderr; very long outputs might need spawn().
+
+Backoff math: next_run uses Math.pow(backoff_base, attempts) seconds. This meets the spec; base is configurable.
+
+Worker model: Workers are OS processes spawned by the CLI (spawn('node', ['src/index.js'])). PIDs are stored to allow worker:stop.
+
+No web server: Dashboard is optional — not implemented here by default. Could be added as a bonus.
+
+5. Testing instructions (core flows)
+
+Run these scenarios to verify assignment requirements.
+
+Use two terminals when testing: one to run workers, another for CLI commands.
+
+A. Basic job completes
+
+Prepare job file j-success.json:
+
+{ "id": "success1", "command": "echo hi" }
+
+Enqueue and start a worker:
+
+node src/cli/queuectl.js enqueue j-success.json
+node src/cli/queuectl.js worker:start
+
+Observe worker logs: job should run and get completed. Check DB or queuectl list --state completed.
+
+B. Failed job retries and DLQ
+
+Create j-fail.json with an invalid command:
+
+{ "id": "fail1", "command": "nonexistent_cmd", "max_retries": 2 }
+
+Enqueue and watch worker attempts: it should retry with exponential backoff, then move to dead after retries exhausted.
+
+Verify with: queuectl list --state dead and queuectl dlq:retry fail1 to requeue.
+
+C. Multiple workers, no overlap
+
+Enqueue several sleep/timeout commands (platform-appropriate). Use unique IDs.
+
+Start multiple workers: queuectl worker:start --count 3.
+
+Confirm each job is processed once (check DB processing/completed states and worker logs).
+
+D. Invalid commands fail gracefully
+
+Enqueue a job with command: "invalidcmd". Worker should capture error, increment attempts, and schedule retry or move to DLQ.
+
+E. Persistence across restart
+
+Start worker, enqueue a job, stop workers (worker:stop), restart workers and verify pending job gets processed — jobs survive DB restart or app restart.
+
+Extra developer tips
+
+Windows note: sleep is not a Windows builtin. Use timeout /T 2 or ping -n 3 127.0.0.1 > nul as a sleep substitute when testing on Windows.
+
+If PIDs are null or missing: ensure the CLI worker:start spawns detached processes correctly and writes PIDs into .pids/workers.json.
+
+To clear DB (dev): use node dropDb.js (ensure .env DB URL points to a dev DB). Be careful — this deletes data.
+
+Contact / notes
+
+This README is tailored to the internship assignment requirements. If you want, I can also:
+
+add a quick demo script to run the test scenarios automatically,
+
+produce a short architecture.md with sequence diagrams,
+
+or implement one bonus feature (I recommend Job output logging first).
