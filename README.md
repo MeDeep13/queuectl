@@ -36,7 +36,7 @@ Run commands with Node (examples below). For development you may run workers or 
 Note about Windows PowerShell vs cmd vs bash quoting: passing JSON/strings with spaces may need different quoting. For PowerShell prefer single quotes around JSON: '{ "id": "job1", "command": "echo hi" }' or better: pass a file path.
 
 ## Enqueue
-- <pre>```jsonnode src/cli/queuectl.js enqueue '{\"id\":\"job1\",\"command\":\"echo Hello World\"}'</pre>
+- <pre>```json node src/cli/queuectl.js enqueue '{\"id\":\"job1\",\"command\":\"echo Hello World\"}'</pre>
 - 
 ## Start workers
 
