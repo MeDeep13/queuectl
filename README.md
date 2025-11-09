@@ -36,12 +36,8 @@ Note about Windows PowerShell vs cmd vs bash quoting: passing JSON/strings with 
 
 ## Enqueue
 
-{ "id": "job1", "command": "echo Hello World" }
-
-Then:
-
 node src/cli/queuectl.js enqueue node src/cli/queuectl.js enqueue '{\"id\":\"job111\",\"command\":\"echo hi\"}'
-# output: Job enqueued successfully! job1 echo Hello World
+output: Job enqueued successfully! job1 echo Hello World
 ## Start workers
 
 Start 1 worker (foreground logs):
