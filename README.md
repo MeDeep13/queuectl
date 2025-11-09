@@ -54,6 +54,9 @@
   DEFAULT_MAX_RETRIES=3
 
 - .config/config.json is created automatically by the CLI when needed.
+## Clone the repository
+git clone https://github.com/MeDeep13/queuectl.git
+cd queuectl
 
 ## Install & start
 - #from project root  
@@ -71,11 +74,11 @@ Note about Windows PowerShell vs cmd vs bash quoting: passing JSON/strings with 
   
 ## Start workers
 
-Start 1 worker  
-node src/cli/queuectl.js worker:start
+- Start 1 worker  
+  node src/cli/queuectl.js worker:start
 
-Start 3 workers (spawns 3 processes and writes PIDs to .pids/workers.json):  
-node src/cli/queuectl.js worker:start --count 3
+- Start 3 workers (spawns 3 processes and writes PIDs to .pids/workers.json):  
+  node src/cli/queuectl.js worker:start --count 3
 
 ## Stop workers (gracefullu)
 node src/cli/queuectl.js worker:stop
