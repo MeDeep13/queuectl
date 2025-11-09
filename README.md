@@ -165,28 +165,22 @@ Enqueue several commands (platform-appropriate). Use unique IDs.
 Start multiple workers: queuectl worker:start --count 3.
 Confirm each job is processed once (check DB processing/completed states and worker logs).
 
-D. Invalid commands fail gracefully
+### D. Invalid commands fail gracefully
 
 Enqueue a job with command: "invalidcmd". Worker should capture error, increment attempts, and schedule retry or move to DLQ.
 
-E. Persistence across restart
+### E. Persistence across restart
 
 Start worker, enqueue a job, stop workers (worker:stop), restart workers and verify pending job gets processed — jobs survive DB restart or app restart.
 
-Extra developer tips
+### F. Clear database
+If there is already data or you want to start over, you can clean the database, I have dropDb.js for that  
+To clear DB (dev): use node dropDb.js (ensure .env DB URL points to a dev DB). Be careful — this deletes data.
+
+### Extra developer tips
 
 Windows note: sleep is not a Windows builtin. Use timeout /T 2 or ping -n 3 127.0.0.1 > nul as a sleep substitute when testing on Windows.
 
-If PIDs are null or missing: ensure the CLI worker:start spawns detached processes correctly and writes PIDs into .pids/workers.json.
 
-To clear DB (dev): use node dropDb.js (ensure .env DB URL points to a dev DB). Be careful — this deletes data.
 
-Contact / notes
 
-This README is tailored to the internship assignment requirements. If you want, I can also:
-
-add a quick demo script to run the test scenarios automatically,
-
-produce a short architecture.md with sequence diagrams,
-
-or implement one bonus feature (I recommend Job output logging first).
