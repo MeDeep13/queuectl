@@ -37,13 +37,13 @@ Note about Windows PowerShell vs cmd vs bash quoting: passing JSON/strings with 
 
 ## Enqueue
 - <pre>```bashnode src/cli/queuectl.js enqueue '{\"id\":\"job1\",\"command\":\"echo Hello World\"}'```</pre>
-- 
+  
 ## Start workers
 
-Start 1 worker
+Start 1 worker  
 node src/cli/queuectl.js worker:start
 
-Start 3 workers (spawns 3 processes and writes PIDs to .pids/workers.json):
+Start 3 workers (spawns 3 processes and writes PIDs to .pids/workers.json):  
 node src/cli/queuectl.js worker:start --count 3
 
 ## Stop workers (gracefullu)
