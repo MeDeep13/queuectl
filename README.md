@@ -12,3 +12,13 @@
 - Node.js (v16+ recommended)
 - npm
 - MongoDB instance (Atlas connection string)  [MY CONNECTION STRING IS AVAILABLE IN .ENV FILE, IF THAT DON'T WORK IN ANY CASE, USE PERSONAL CONNECTION STRING OF MONGODB ATLAS]
+
+## Files you should create/verify
+
+- .env (project root) — below is my connection string
+
+- DB_URL=mongodb+srv://admin:admin@kuldeepcluster.5zaybhb.mongodb.net/?appName=KuldeepCluster
+  BACKOFF_BASE=2
+  DEFAULT_MAX_RETRIES=3
+
+- .config/config.json is created automatically by the CLI when needed.
