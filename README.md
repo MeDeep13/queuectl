@@ -1,5 +1,6 @@
 # QUEUECTL – Background Job Queue & Worker System (CLI Based)  
-**Author:** Kuldeep Saharan  
+**Author:** Kuldeep Saharan   
+
 QUEUECTL is a lightweight job queue system built with **Node.js** and **MongoDB**, featuring persistent jobs, multiple workers, graceful shutdown, retry handling, exponential backoff, Dead Letter Queue (DLQ) replays, and a configurable runtime — all accessible through a CLI tool.  
 
 # Working CLI DEMO
