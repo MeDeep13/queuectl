@@ -1,5 +1,5 @@
 # Working CLI DEMO
-### Link: [Link Text](https://example.com)
+### Link: [CLI DEMO LINK](https://example.com)
 
 # Quick links
 
