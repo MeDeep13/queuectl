@@ -1,4 +1,4 @@
-## Quick links
+# Quick links
 
 - Project root commands shown assume you run them from the project root (QUEUECTL).
 - Worker process file: src/workers/worker.js
