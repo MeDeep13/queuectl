@@ -60,7 +60,8 @@ QUEUECTL is a lightweight job queue system built with **Node.js** and **MongoDB*
 
 - .config/config.json is created automatically by the CLI when needed.
 ## Clone the repository
-git clone https://github.com/MeDeep13/queuectl.git
+git clone https://github.com/MeDeep13/queuectl.git  
+## move into project directory
 cd queuectl
 
 ## Install & start
