@@ -4,7 +4,7 @@
 QUEUECTL is a lightweight job queue system built with **Node.js** and **MongoDB**, featuring persistent jobs, multiple workers, graceful shutdown, retry handling, exponential backoff, Dead Letter Queue (DLQ) replays, and a configurable runtime — all accessible through a CLI tool.  
 
 # Working CLI DEMO
-### Link: [QUEUECTL DEMO LINK](https://drive.google.com/file/d/128nR1AzKS428mA9b3SMWPnS7S9WiyEeN/view?usp=sharing)
+### Link: [QUEUECTL STRUCTURE AND COMMANDS LINK](https://drive.google.com/file/d/128nR1AzKS428mA9b3SMWPnS7S9WiyEeN/view?usp=sharing)
 
 # Quick links
 
