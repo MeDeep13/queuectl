@@ -42,16 +42,17 @@ QUEUECTL is a lightweight job queue system built with **Node.js** and **MongoDB*
       └── package.json   
 
 # Read for your convenience
-- Check the values of "default_max_retries" and "backoff_base" before running commands. (If values are too high, it will take a lot of time in testing; it is suggested to use 3 and 2, respectively)
-- for checking type command: node src/cli/queuectl.js config:get (from project root that is QUEUECTL)
-- If you are getting an error enqueuing jobs with the same ID (example id: job1), consider clearing the database first by command: node dropDb.js
+- Check the values of **"default_max_retries"** and **"backoff_base"** before running commands. (If values are too high, it will take a lot of time in testing; it is suggested to use 3 and 2, respectively)
+- for checking type **command: node src/cli/queuectl.js config:get** (from project root that is QUEUECTL)
+- If you are getting an error enqueuing jobs with the same ID (example id: job1), consider clearing the database first by **command: node dropDb.js**
+  
 # 1. Setup — run locally
 ## Prerequisites
 
 - Node.js (v16+ recommended)
 - npm
 - MongoDB instance (Atlas connection string)
-  [MY CONNECTION STRING IS AVAILABLE IN .ENV FILE, IF THAT DON'T WORK IN ANY CASE, USE PERSONAL CONNECTION STRING OF MONGODB ATLAS]
+  [MY CONNECTION STRING IS AVAILABLE IN .ENV FILE., IF THAT DOESN'T WORK, IN ANY CASE, USE PERSONAL CONNECTION STRING OF MONGODB ATLAS]
 
 ## Files you should create/verify
 
